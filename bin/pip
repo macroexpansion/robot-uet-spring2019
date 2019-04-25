@@ -1,5 +1,4 @@
 #!/home/bakasaka/Programming/robotic/bin/python
-
 # -*- coding: utf-8 -*-
 import re
 import sys
