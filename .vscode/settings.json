@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/home/bakasaka/.pyenv/versions/3.6.8/bin/python"
+    "python.pythonPath": "/home/bakasaka/Programming/robotic/bin/python",
+    "python.linting.enabled": false
 }
