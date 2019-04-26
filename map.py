@@ -10,7 +10,7 @@ controller.reset('FloorPlan18')
 
 event = controller.step(dict(action='Initialize', gridSize=0.2, rotation=0.1))
 
-X_ROOM, Y_ROOM = 600, 600
+X_ROOM, Y_ROOM = 1200, 1200
 img = np.zeros((X_ROOM, Y_ROOM,3), np.uint8)
 
 color = {
