@@ -1,3 +1,4 @@
 include
 lib
 bin
+object_detection/yolov3.weights
