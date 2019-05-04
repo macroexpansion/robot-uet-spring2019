@@ -42,4 +42,4 @@ if __name__ == '__main__':
 	c.reset("FloorPlan1")
 	topview = get_agent_map_data(c)
 	plt.imshow(topview["frame"])
-	plt.show()
+	plt.savefig('map.jpg')

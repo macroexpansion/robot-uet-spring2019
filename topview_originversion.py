@@ -7,6 +7,7 @@ import copy
 import numpy as np
 import keyboard
 
+
 class ThorPositionTo2DFrameTranslator(object):
     def __init__(self, frame_shape, cam_position, orth_size):
         self.frame_shape = frame_shape
@@ -49,31 +50,20 @@ def get_agent_map_data(c: Controller):
     c.step(dict(action = 'ToggleMapView'))
     return to_return
 
+listRectangle = []
 
-def add_agent_view_triangle(
-    position, rotation, frame, pos_translator, scale=1.0, opacity=0.7
-):
-    p0 = np.array((position[0], position[2]))
-    p1 = copy.copy(p0)
-    p2 = copy.copy(p0)
-
-    theta = -2 * math.pi * (rotation / 360.0)
-    rotation_mat = np.array(
-        [[math.cos(theta), -math.sin(theta)], [math.sin(theta), math.cos(theta)]]
-    )
-    offset1 = scale * np.array([-1, 1]) * math.sqrt(2) / 2
-    offset2 = scale * np.array([1, 1]) * math.sqrt(2) / 2
-
-    p1 += np.matmul(rotation_mat, offset1)
-    p2 += np.matmul(rotation_mat, offset2)
-
+def add_agent_view_triangle(position, rotation, frame, pos_translator):
+    
     img1 = Image.fromarray(frame.astype("uint8"), "RGB").convert("RGBA")
     img2 = Image.new("RGBA", frame.shape[:-1])  # Use RGBA
 
-    opacity = int(round(255 * opacity))  # Define transparency for the triangle.
-    points = [tuple(reversed(pos_translator(p))) for p in [p0, p1, p2]]
+    convert = pos_translator(position)
+
     draw = ImageDraw.Draw(img2)
-    draw.polygon(points, fill=(39, 174, 96, opacity))
+    global listRectangle
+    listRectangle += [((convert[1], convert[0]), (convert[1] + 20, convert[0] + 20))]
+    for rect in listRectangle:
+        draw.rectangle((rect[0], rect[1]), fill=(39, 174, 96))
 
     img = Image.alpha_composite(img1, img2)
     return np.array(img.convert("RGB"))
@@ -106,6 +96,9 @@ if __name__ == "__main__":
             elif keyboard.is_pressed('down arrow'):
                 plt.close(1)
                 event = c.step(dict(action = 'MoveBack'))
+            elif keyboard.is_pressed('r'):
+                plt.close(1)
+                event = c.step(dict(action = 'RotateLeft'))
             new_frame1 = add_agent_view_triangle(
                 position_to_tuple(c.last_event.metadata["agent"]["position"]),
                 c.last_event.metadata["agent"]["rotation"]["y"],
