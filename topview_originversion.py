@@ -60,15 +60,6 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
     convert = pos_translator(position)
 
     draw = ImageDraw.Draw(img2)
-    global listCircle
-    if c.last_event.metadata['lastActionSuccess'] == True:
-        listCircle += [((convert[1] - 5, convert[0] - 5), (convert[1] + 5, convert[0] + 5))]
-    length = len(listCircle)
-    blue = round(length*0.5)
-    green = round(length*0.2)
-    yellow = round(length*0.1)
-    orange = round(length*0.1)
-    red = length - blue - green - yellow - orange
     
     # Make color head
     point1 = (convert[1] - 10, convert[0] - 10)
@@ -96,18 +87,30 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
 
     draw.polygon(triangle, fill = 'purple')
 
+    global listCircle
+    if c.last_event.metadata['lastActionSuccess'] == True:
+        listCircle += [((convert[1] - 5, convert[0] - 5), (convert[1] + 5, convert[0] + 5))]
+    
+    length = len(listCircle)
+    blue = round(length*0.6)
+    green = round(length*0.1)
+    yellow = round(length*0.1)
+    orange = round(length*0.1)
+    red = length - blue - green - yellow - orange
+
     # Make color tail
-    for index in range(length):
-        if index < blue:
-            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='blue')
-        elif index >= blue and index < (blue + green):
-            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='green')
-        elif index >= (blue + green) and index < (blue + green + yellow):
-            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='yellow')
-        elif index >= (blue + green + yellow) and index < (blue + green + yellow + orange):
-            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='orange')
-        elif index >= (blue + green + yellow + orange) and index < length:
+    for index in reversed(range(length)):
+        if index >= (length - red):
             draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='red')
+        elif index >= (length - red - orange) and index < (length - red):
+            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='orange')
+        elif index >= (length - red - orange - yellow) and index < (length - red - orange):
+            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='yellow')
+        elif index >= (length - red - orange - yellow - green) and index < (length - red - orange - yellow):
+            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='green')
+        elif index < (length - red - orange - yellow - green):
+            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='blue')
+              
     
     img = Image.alpha_composite(img1, img2)
     return np.array(img.convert("RGB"))
