@@ -70,19 +70,6 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
     orange = round(length*0.1)
     red = length - blue - green - yellow - orange
     
-    # Make color tail
-    for index in range(length):
-        if index < blue:
-            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='blue')
-        elif index >= blue and index < (blue + green):
-            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='green')
-        elif index >= (blue + green) and index < (blue + green + yellow):
-            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='yellow')
-        elif index >= (blue + green + yellow) and index < (blue + green + yellow + orange):
-            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='orange')
-        elif index >= (blue + green + yellow + orange) and index < length:
-            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='red')
-    
     # Make color head
     point1 = (convert[1] - 10, convert[0] - 10)
     point2 = (convert[1] + 10, convert[0] - 10)
@@ -108,6 +95,20 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
     triangle += [(point2)]
 
     draw.polygon(triangle, fill = 'purple')
+
+    # Make color tail
+    for index in range(length):
+        if index < blue:
+            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='blue')
+        elif index >= blue and index < (blue + green):
+            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='green')
+        elif index >= (blue + green) and index < (blue + green + yellow):
+            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='yellow')
+        elif index >= (blue + green + yellow) and index < (blue + green + yellow + orange):
+            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='orange')
+        elif index >= (blue + green + yellow + orange) and index < length:
+            draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='red')
+    
     img = Image.alpha_composite(img1, img2)
     return np.array(img.convert("RGB"))
 
