@@ -134,8 +134,10 @@ if __name__ == "__main__":
         topview["pos_translator"],
         c
     )
+    plt.ion()
     plt.imshow(new_frame)
-    plt.show(block = False)
+    plt.show()
+    # plt.pause(0.1)
     while True:
         try:
             if keyboard.is_pressed('left arrow'):
@@ -161,6 +163,7 @@ if __name__ == "__main__":
                 c
             )
             plt.imshow(new_frame1)
-            plt.show(block = False)
+            plt.show()
+            plt.pause(0.1)
         except Exception as error:
             raise error

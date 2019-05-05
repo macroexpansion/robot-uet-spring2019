@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw
 import keyboard
 from matplotlib import pyplot as plt
 
-source_image = Image.open('/Users/minhmon/robot-uet-spring2019/map.png')
+source_image = Image.open('map.png')
 draw = ImageDraw.Draw(source_image)
 x = 0
 y = 0
