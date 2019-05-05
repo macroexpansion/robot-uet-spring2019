@@ -29,9 +29,9 @@ INPUT_WEIGHTS = 'object_detection/yolov3.weights'
 INPUT_CLASSES = 'object_detection/yolov3.txt'
 
 
-def object_detector(input_img):
+def object_detector(image):
 
-    image = cv2.imread(input_img)
+    # image = cv2.imread(input_img)
 
     Width = image.shape[1]
     Height = image.shape[0]
@@ -88,5 +88,5 @@ def object_detector(input_img):
     cv2.imshow("object detection", image)
     cv2.waitKey()
         
-    cv2.imwrite("object_detection/object-detection.jpg", image)
-    cv2.destroyAllWindows()
+    # cv2.imwrite("object_detection/object-detection.jpg", image)
+    # cv2.destroyAllWindows()
