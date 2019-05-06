@@ -95,13 +95,11 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
     
     length = len(listCircle)
     red = math.ceil(length*0.1)
-    print(red)
     green = round(length*0.1)
     yellow = round(length*0.1)
     orange = round(length*0.1)
     blue = length - red - green - yellow - orange
-    print(blue)
-
+    
     # Make color tail
     for index in range(length):
         if index >= (length - red):
