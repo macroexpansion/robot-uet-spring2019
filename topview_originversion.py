@@ -7,7 +7,6 @@ import copy
 import numpy as np
 import keyboard
 
-
 class ThorPositionTo2DFrameTranslator(object):
     def __init__(self, frame_shape, cam_position, orth_size):
         self.frame_shape = frame_shape
@@ -89,17 +88,22 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
 
     global listCircle
     if c.last_event.metadata['lastActionSuccess'] == True:
-        listCircle += [((convert[1] - 5, convert[0] - 5), (convert[1] + 5, convert[0] + 5))]
+    	z = listCircle[-1][0]
+    	x = listCircle[-1][1]
+    	if z != (convert[1] - 5, convert[0] - 5)  or x != (convert[1] + 5, convert[0] + 5):
+    		listCircle += [((convert[1] - 5, convert[0] - 5), (convert[1] + 5, convert[0] + 5))]
     
     length = len(listCircle)
-    blue = round(length*0.6)
+    red = math.ceil(length*0.1)
+    print(red)
     green = round(length*0.1)
     yellow = round(length*0.1)
     orange = round(length*0.1)
-    red = length - blue - green - yellow - orange
+    blue = length - red - green - yellow - orange
+    print(blue)
 
     # Make color tail
-    for index in reversed(range(length)):
+    for index in range(length):
         if index >= (length - red):
             draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='red')
         elif index >= (length - red - orange) and index < (length - red):
@@ -110,8 +114,7 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
             draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='green')
         elif index < (length - red - orange - yellow - green):
             draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='blue')
-              
-    
+        
     img = Image.alpha_composite(img1, img2)
     return np.array(img.convert("RGB"))
 
@@ -127,6 +130,8 @@ if __name__ == "__main__":
     c.reset("FloorPlan1")
     c.step(dict(action = 'Initialize', gridSize = 0.2))
     topview = get_agent_map_data(c)
+    convert = topview["pos_translator"](position_to_tuple(c.last_event.metadata["agent"]["position"]))
+    listCircle += [((convert[1] - 5, convert[0] - 5), (convert[1] + 5, convert[0] + 5))]
     new_frame = add_agent_view_triangle(
         position_to_tuple(c.last_event.metadata["agent"]["position"]),
         c.last_event.metadata["agent"]["rotation"]["y"],
@@ -134,36 +139,42 @@ if __name__ == "__main__":
         topview["pos_translator"],
         c
     )
+    
     plt.ion()
     plt.imshow(new_frame)
     plt.show()
-    # plt.pause(0.1)
     while True:
         try:
             if keyboard.is_pressed('left arrow'):
-                plt.close(1)
+                plt.clf()
                 event = c.step(dict(action = 'MoveLeft'))
             elif keyboard.is_pressed('right arrow'):
-                plt.close(1)
+                plt.clf()
                 event = c.step(dict(action = 'MoveRight'))
             elif keyboard.is_pressed('up arrow'):
-                plt.close(1)
+                plt.clf()
                 event = c.step(dict(action = 'MoveAhead'))
             elif keyboard.is_pressed('down arrow'):
-                plt.close(1)
+                plt.clf()
                 event = c.step(dict(action = 'MoveBack'))
             elif keyboard.is_pressed('r'):
-                plt.close(1)
+                plt.clf()
                 event = c.step(dict(action = 'RotateRight'))
-            new_frame1 = add_agent_view_triangle(
+            elif keyboard.is_pressed('u'):
+            	plt.clf()
+            	event = c.step(dict(action = 'LookUp'))
+            elif keyboard.is_pressed('d'):
+            	plt.clf()
+            	event = c.step(dict(action = 'LookDown'))
+            new_frame = add_agent_view_triangle(
                 position_to_tuple(c.last_event.metadata["agent"]["position"]),
                 c.last_event.metadata["agent"]["rotation"]["y"],
                 topview["frame"],
                 topview["pos_translator"],
                 c
             )
-            plt.imshow(new_frame1)
+            plt.imshow(new_frame)
             plt.show()
-            plt.pause(0.1)
+            plt.pause(0.001)
         except Exception as error:
             raise error
