@@ -144,31 +144,24 @@ if __name__ == "__main__":
             if keyboard.is_pressed('left arrow'):
                 plt.clf()
                 event = c.step(dict(action = 'MoveLeft'))
-                topview = get_agent_map_data(c)
             elif keyboard.is_pressed('right arrow'):
                 plt.clf()
                 event = c.step(dict(action = 'MoveRight'))
-                topview = get_agent_map_data(c)
             elif keyboard.is_pressed('up arrow'):
                 plt.clf()
                 event = c.step(dict(action = 'MoveAhead'))
-                topview = get_agent_map_data(c)
             elif keyboard.is_pressed('down arrow'):
                 plt.clf()
                 event = c.step(dict(action = 'MoveBack'))
-                topview = get_agent_map_data(c)
             elif keyboard.is_pressed('r'):
                 plt.clf()
                 event = c.step(dict(action = 'RotateRight'))
-                topview = get_agent_map_data(c)
             elif keyboard.is_pressed('u'):
             	plt.clf()
             	event = c.step(dict(action = 'LookUp'))
-            	topview = get_agent_map_data(c)
             elif keyboard.is_pressed('d'):
             	plt.clf()
             	event = c.step(dict(action = 'LookDown'))
-            	topview = get_agent_map_data(c)
             new_frame = add_agent_view_triangle(
                 position_to_tuple(c.last_event.metadata["agent"]["position"]),
                 c.last_event.metadata["agent"]["rotation"]["y"],
