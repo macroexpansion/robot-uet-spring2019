@@ -1,9 +1,7 @@
 import math
-import matplotlib
 import matplotlib.pyplot as plt
 from ai2thor.controller import Controller
 from PIL import Image, ImageDraw
-import copy
 import numpy as np
 import keyboard
 
