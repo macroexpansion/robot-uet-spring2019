@@ -49,3 +49,10 @@ source bin/activate`
 * "D": Look Down
 
 ![](map.png)
+
+## III. Group members
+
++ Phí Văn Minh - 16022411
++ Lê Trung Thông - 16020286
++ Nguyễn Duy Quang - 16020271
+
