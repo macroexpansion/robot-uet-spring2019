@@ -47,3 +47,5 @@ source bin/activate`
 * "R": Rotate agent 90 degree to the right
 * "U": Look Up
 * "D": Look Down
+
+![](map.png)
