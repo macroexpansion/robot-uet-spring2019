@@ -1,10 +1,13 @@
 import math
+import matplotlib
+matplotlib.use("TkAgg", warn=False) # Kết nối đến backend trong virtualenv
 import matplotlib.pyplot as plt
 from ai2thor.controller import Controller
 from PIL import Image, ImageDraw
 import numpy as np
 import keyboard
 
+# Hàm chuyển toạ độ agent's local position thành agent's global position
 class ThorPositionTo2DFrameTranslator(object):
     def __init__(self, frame_shape, cam_position, orth_size):
         self.frame_shape = frame_shape
@@ -26,11 +29,12 @@ class ThorPositionTo2DFrameTranslator(object):
             dtype=int,
         )
 
-
+# Hàm chuyển toạ độ của agent's position thành tuple
 def position_to_tuple(position):
     return (position["x"], position["y"], position["z"])
 
 
+# Hàm lấy thông tin topview map
 def get_agent_map_data(c: Controller):
     c.step(dict(action = 'ToggleMapView'))
     cam_position = c.last_event.metadata["cameraPosition"]
@@ -47,21 +51,23 @@ def get_agent_map_data(c: Controller):
     c.step(dict(action = 'ToggleMapView'))
     return to_return
 
-listCircle = []
+listCircle = [] # List lưu vị trí đã đi qua
 
-def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Controller):
+# Hàm xử lý sự kiện
+def event_process(position, rotation, frame, pos_translator, c:Controller):
     
     img1 = Image.fromarray(frame.astype("uint8"), "RGB").convert("RGBA")
     img2 = Image.new("RGBA", frame.shape[:-1])  # Use RGBA
 
     convert = pos_translator(position)
 
-    draw = ImageDraw.Draw(img2)
+    draw = ImageDraw.Draw(img2) # Vẽ topview
     
-    # Make color head
+    
     point1 = (convert[1] - 10, convert[0] - 10)
     point2 = (convert[1] + 10, convert[0] - 10)
     
+    # Xoay góc nhìn camera (hình tam giác) theo agent's rotation[y]
     if rotation == 90:
         point1 = rotatePoint(point1, convert)
         point2 = rotatePoint(point2, convert)
@@ -82,8 +88,10 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
     triangle += [(point1)]
     triangle += [(point2)]
 
+    # Vẽ hình tam giác
     draw.polygon(triangle, fill = 'purple')
 
+    # Thêm vị trí mới vào list lưu vết
     global listCircle
     if c.last_event.metadata['lastActionSuccess'] == True:
     	z = listCircle[-1][0]
@@ -91,6 +99,7 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
     	if z != (convert[1] - 5, convert[0] - 5)  or x != (convert[1] + 5, convert[0] + 5):
     		listCircle += [((convert[1] - 5, convert[0] - 5), (convert[1] + 5, convert[0] + 5))]
     
+    # Tô màu đường đi
     length = len(listCircle)
     red = math.ceil(length*0.1)
     green = round(length*0.1)
@@ -98,7 +107,7 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
     orange = round(length*0.1)
     blue = length - red - green - yellow - orange
     
-    # Make color tail
+    # Vẽ các hình tròn biểu thị cho vị trí đã đi qua
     for index in range(length):
         if index >= (length - red):
             draw.ellipse((listCircle[index][0], listCircle[index][1]), fill='red')
@@ -114,13 +123,16 @@ def add_agent_view_triangle(position, rotation, frame, pos_translator, c:Control
     img = Image.alpha_composite(img1, img2)
     return np.array(img.convert("RGB"))
 
+# Xoay một điểm 90 độ so với gốc 
 def rotatePoint(point, root):
     x = point[0] - root[1]
     y = point[1] - root[0]
     return (-y + root[1], x + root[0])
 
-
+# Hàm main
 if __name__ == "__main__":    
+    
+    # Khởi tạo căn phòng
     c = Controller()
     c.start()
     c.reset("FloorPlan1")
@@ -128,7 +140,7 @@ if __name__ == "__main__":
     topview = get_agent_map_data(c)
     convert = topview["pos_translator"](position_to_tuple(c.last_event.metadata["agent"]["position"]))
     listCircle += [((convert[1] - 5, convert[0] - 5), (convert[1] + 5, convert[0] + 5))]
-    new_frame = add_agent_view_triangle(
+    new_frame = event_process(
         position_to_tuple(c.last_event.metadata["agent"]["position"]),
         c.last_event.metadata["agent"]["rotation"]["y"],
         topview["frame"],
@@ -162,7 +174,7 @@ if __name__ == "__main__":
             elif keyboard.is_pressed('d'):
             	plt.clf()
             	event = c.step(dict(action = 'LookDown'))
-            new_frame = add_agent_view_triangle(
+            new_frame = event_process(
                 position_to_tuple(c.last_event.metadata["agent"]["position"]),
                 c.last_event.metadata["agent"]["rotation"]["y"],
                 topview["frame"],
