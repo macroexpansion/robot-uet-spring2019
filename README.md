@@ -24,6 +24,7 @@
 2. Active virtual environment
 
 `cd robot-uet-spring2019/code`
+
 `source bin/activate`
 
 3. Run code
