@@ -1,4 +1,4 @@
-# Challange 2 Solution
+# Challenge 2 Solution
 
 ## I. Requirements
 
