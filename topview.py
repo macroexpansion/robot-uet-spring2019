@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import math
 import matplotlib
 matplotlib.use("TkAgg", warn=False) # Kết nối đến backend trong virtualenv
