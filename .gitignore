@@ -5,3 +5,4 @@ venv
 object_detection/yolov3.weights
 .vscode
 object_detection/__pycache__
+od.py

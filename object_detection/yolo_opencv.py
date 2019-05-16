@@ -31,10 +31,12 @@ INPUT_CLASSES = 'object_detection/yolov3.txt'
 
 def object_detector(image):
 
-    # image = cv2.imread(input_img)
+    # image = cv2.imread(input_image)
 
     Width = image.shape[1]
     Height = image.shape[0]
+    dim = (Width,Height)
+    image = cv2.resize(image,dim,interpolation = cv2.INTER_AREA)
     scale = 0.00392
 
     classes = None
